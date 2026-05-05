@@ -1,0 +1,39 @@
+﻿version: '3.8'
+
+services:
+  # SQL Server Database Container
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: taskmanager-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - taskmanager-network
+    restart: unless-stopped
+
+  # Optional: API Layer (can add later)
+  # taskmanager-api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.api
+  #   container_name: taskmanager-api
+  #   depends_on:
+  #     - sqlserver
+  #   ports:
+  #     - "5000:80"
+  #   networks:
+  #     - taskmanager-network
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  taskmanager-network:
+    driver: bridge
